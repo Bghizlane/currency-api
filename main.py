@@ -1,25 +1,16 @@
-import os
 
-import requests
-from dotenv import load_dotenv
-
-load_dotenv()
-
-API_URL = os.getenv("CURRENCY_API_URL")
+from currency import convert_currency
 
 
-def convert_currency(from_currency, to_currency, amount):
-    url = f"{API_URL}?from={from_currency}&to={to_currency}"
+from_currency = input("From currency: ").upper()
+to_currency = input("To currency: ").upper()
+amount = float(input("Amount: "))
 
-    try:
-        response = requests.get(url, timeout=10)
+result = convert_currency(from_currency, to_currency, amount)
 
-        if response.status_code == 200:
-            data = response.json()
-            rate = data["rates"][to_currency]
-            return amount * rate
+if result is not None:
+    print("Conversion successful!")
+    print(f"{amount} {from_currency} = {result:.2f} {to_currency}")
+else:
+    print("Error: Could not get exchange rate.")
 
-        return None
-
-    except requests.RequestException:
-        return None
